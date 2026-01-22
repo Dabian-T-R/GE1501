@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi Pico Interactive Game Project | Engineering Design Portfolio</title>
+    <meta name="description" content="A comprehensive portfolio showcasing the design and development of an interactive electronic game using Raspberry Pi Pico, featuring the full engineering design process from concept to final product.">
+    <meta name="keywords" content="Raspberry Pi Pico, Engineering Design, Interactive Game, Electronics, CAD, Python Programming, Laser Cutting, Portfolio">
+    
+    <!-- Advanced Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Particle.js Library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#3b82f6',
+                            dark: '#60a5fa'
+                        },
+                        secondary: {
+                            DEFAULT: '#1e40af',
+                            dark: '#93c5fd'
+                        },
+                        accent: {
+                            DEFAULT: '#f59e0b',
+                            dark: '#fbbf24'
+                        },
+                        tech: {
+                            blue: '#3b82f6',
+                            green: '#10b981',
+                            purple: '#8b5cf6',
+                            orange: '#f59e0b',
+                            red: '#ef4444',
+                            cyan: '#06b6d4',
+                            pink: '#ec4899'
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'shimmer': 'shimmer 2s infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'slide-in': 'slideIn 0.5s ease-out',
+                        'wave': 'wave 1.5s ease-in-out infinite',
+                        'gradient': 'gradient 3s ease infinite',
+                        'neon': 'neon 1.5s ease-in-out infinite alternate',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'typing': 'typing 3.5s steps(40, end)',
+                        'blink': 'blink 1s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        glow: {
+                            '0%': { 
+                                boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)',
+                                textShadow: '0 0 10px rgba(59, 130, 246, 0.5)'
+                            },
+                            '100%': { 
+                                boxShadow: '0 0 30px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.5)',
+                                textShadow: '0 0 20px rgba(59, 130, 246, 0.8)'
+                            }
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        wave: {
+                            '0%, 100%': { transform: 'rotate(0deg)' },
+                            '25%': { transform: 'rotate(20deg)' },
+                            '75%': { transform: 'rotate(-15deg)' }
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' }
+                        },
+                        neon: {
+                            '0%': { 
+                                filter: 'drop-shadow(0 0 5px currentColor)',
+                                opacity: '0.8'
+                            },
+                            '100%': { 
+                                filter: 'drop-shadow(0 0 20px currentColor)',
+                                opacity: '1'
+                            }
+                        },
+                        typing: {
+                            'from': { width: '0' },
+                            'to': { width: '100%' }
+                        },
+                        blink: {
+                            '50%': { borderColor: 'transparent' }
+                        }
+                    },
+                    backgroundImage: {
+                        'circuit-board': "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%233b82f6' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E\")",
+                        'grid-dots': "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%233b82f6' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='20' cy='20' r='1'/%3E%3C/g%3E%3C/svg%3E\")",
+                        'gradient-radial': 'radial-gradient(circle at center, var(--tw-gradient-stops))',
+                        'gradient-tech': 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 25%, #f59e0b 50%, #10b981 75%, #06b6d4 100%)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #b967ff;
+            --neon-green: #00ff9d;
+            --neon-pink: #ff00ff;
+            --neon-orange: #ff9900;
+        }
+        
+        * {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+            z-index: -2;
+        }
+        
+        /* Hero Section with Particle Background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Futuristic Card Design */
+        .tech-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .tech-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.7s;
+        }
+        
+        .tech-card:hover::before {
+            left: 100%;
+        }
+        
+        .tech-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 
+                0 25px 50px -12px rgba(59, 130, 246, 0.25),
+                0 0 50px rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .dark .tech-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Glowing Border Effect */
+        .glow-border {
+            position: relative;
+            border-radius: 24px;
+        }
+        
+        .glow-border::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #f59e0b, #10b981, #3b82f6);
+            border-radius: 26px;
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .glow-border:hover::after {
+            opacity: 0.7;
+        }
+        
+        /* Animated Gradient Background */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #f59e0b, #10b981);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Shimmer Button */
+        .shimmer-btn {
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                transparent 25%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 75%, 
+                transparent 100%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        
+        /* Floating Elements */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animation-delay-200 { animation-delay: 200ms; }
+        .animation-delay-400 { animation-delay: 400ms; }
+        .animation-delay-600 { animation-delay: 600ms; }
+        
+        /* Binary Code Animation */
+        .binary-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .binary-digit {
+            position: absolute;
+            color: rgba(59, 130, 246, 0.1);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            animation: binary-fall linear infinite;
+        }
+        
+        @keyframes binary-fall {
+            to { transform: translateY(100vh); }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.1);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #2563eb, #7c3aed);
+        }
+        
+        /* Holographic Effect */
+        .holographic {
+            background: linear-gradient(45deg, 
+                rgba(59, 130, 246, 0.1) 0%, 
+                rgba(139, 92, 246, 0.1) 25%, 
+                rgba(245, 158, 11, 0.1) 50%, 
+                rgba(16, 185, 129, 0.1) 75%, 
+                rgba(59, 130, 246, 0.1) 100%);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+        }
+        
+        /* Subtle Gradient Text */
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .dark .gradient-text {
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Responsive Design Improvements */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem !important;
+            }
+            
+            .tech-card {
+                margin: 0 auto;
+                max-width: 90%;
+            }
+        }
+        
+        /* Timeline styling */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3b82f6;
+        }
+        
+        .dark .timeline-item::before {
+            background: #60a5fa;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .dark .card-hover:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="font-sans bg-gradient-to-br from-gray-50 via-white to-blue-50 text-gray-800 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 dark:text-gray-100">
+    
+    <!-- Binary Code Background Animation -->
+    <div class="binary-container" id="binaryContainer"></div>
+    
+    <!-- Theme Toggle with Enhanced Design -->
+    <button id="themeToggle" class="fixed top-6 right-6 z-50 w-14 h-7 rounded-full bg-gradient-to-br from-tech-blue to-tech-purple shadow-2xl flex items-center justify-center">
+        <i class="fas fa-sun text-white text-xl dark:hidden"></i>
+        <i class="fas fa-moon text-white text-xl hidden dark:block"></i>
+        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-tech-blue to-tech-purple opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300"></div>
+    </button>
+    
+    <!-- Navigation with Holographic Effect -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border-b border-gray-200/50 dark:border-gray-700/50">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-tech-blue via-tech-purple to-tech-orange rounded-xl flex items-center justify-center shadow-lg glow-border">
+                        <i class="fas fa-microchip text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <a href="https://dabian-t-r.github.io/ENG.-Portfolio/" 
+                        class="text-2xl font-black text-gray-800 dark:text-white hover:text-tech-blue dark:hover:text-tech-blue transition-colors">
+                            Engineering
+                        </a>
+                        <a href="https://dabian-t-r.github.io/ENG.-Portfolio/" 
+                        class="text-2xl font-black gradient-text">
+                            Portfolio
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-10">
+                    <a href="#home" class="nav-link text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-all duration-300 font-semibold relative group" data-target="home">
+                        <span class="relative z-10">Home</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-tech-blue to-tech-purple group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#overview" class="nav-link text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-all duration-300 font-semibold relative group" data-target="overview">
+                        <span class="relative z-10">Overview</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-tech-blue to-tech-purple group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#process" class="nav-link text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-all duration-300 font-semibold relative group" data-target="process">
+                        <span class="relative z-10">Process</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-tech-blue to-tech-purple group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#iterations" class="nav-link text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-all duration-300 font-semibold relative group" data-target="iterations">
+                        <span class="relative z-10">Iterations</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-tech-blue to-tech-purple group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#final" class="nav-link text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-all duration-300 font-semibold relative group" data-target="final">
+                        <span class="relative z-10">Final Design</span>
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-tech-blue to-tech-purple group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                </div>
+                <button class="md:hidden text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-colors text-2xl" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <!-- Enhanced Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-6 p-6 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50">
+                <div class="space-y-6">
+                    <a href="#home" class="mobile-nav-link block text-tech-blue dark:text-tech-blue font-bold text-lg py-3 px-4 rounded-xl bg-gradient-to-r from-tech-blue/10 to-transparent dark:from-tech-blue/20" data-target="home">
+                        <i class="fas fa-home mr-3"></i>Home
+                    </a>
+                    <a href="#overview" class="mobile-nav-link block text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-colors font-semibold text-lg py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-tech-blue/10 hover:to-transparent" data-target="overview">
+                        <i class="fas fa-info-circle mr-3"></i>Overview
+                    </a>
+                    <a href="#process" class="mobile-nav-link block text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-colors font-semibold text-lg py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-tech-blue/10 hover:to-transparent" data-target="process">
+                        <i class="fas fa-project-diagram mr-3"></i>Process
+                    </a>
+                    <a href="#iterations" class="mobile-nav-link block text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-colors font-semibold text-lg py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-tech-blue/10 hover:to-transparent" data-target="iterations">
+                        <i class="fas fa-sync-alt mr-3"></i>Iterations
+                    </a>
+                    <a href="#final" class="mobile-nav-link block text-gray-600 dark:text-gray-300 hover:text-tech-blue dark:hover:text-tech-blue transition-colors font-semibold text-lg py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-tech-blue/10 hover:to-transparent" data-target="final">
+                        <i class="fas fa-check-circle mr-3"></i>Final Design
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section with Particle Background -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div id="particles-js" class="absolute inset-0"></div>
+        
+        <div class="hero-content container mx-auto px-6 py-20 text-center relative z-10">
+            <!-- Animated Title -->
+            <div class="mb-8">
+                <div class="inline-block">
+                    <h1 class="hero-title text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight">
+                        <span class="block text-gray-800 dark:text-white">
+                            Interactive
+                        </span>
+                        <span class="block gradient-text">
+                            Game Project
+                        </span>
+                    </h1>
+                </div>
+            </div>
+            
+            <!-- Animated Subtitle -->
+            <p class="text-xl md:text-2xl mb-12 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
+                From Concept to Functional Prototype - A Complete Engineering Journey
+            </p>
+            
+            <!-- Creators with Enhanced Design -->
+            <div class="mb-12">
+                <p class="font-semibold text-gray-700 dark:text-gray-300 text-lg mb-6">
+                    Project Creators
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="tech-card px-6 py-3 bg-gradient-to-r from-tech-blue/20 to-tech-purple/20 text-tech-blue dark:text-tech-purple font-semibold rounded-xl hover:scale-105 transition-all duration-300">
+                        Dabian Taborda Restrepo
+                    </span>
+                    <span class="tech-card px-6 py-3 bg-gradient-to-r from-tech-green/20 to-tech-cyan/20 text-tech-green dark:text-tech-cyan font-semibold rounded-xl hover:scale-105 transition-all duration-300">
+                        Eileen Zheng
+                    </span>
+                    <span class="tech-card px-6 py-3 bg-gradient-to-r from-tech-orange/20 to-tech-red/20 text-tech-orange dark:text-tech-red font-semibold rounded-xl hover:scale-105 transition-all duration-300">
+                        Jingwen Huang
+                    </span>
+                    <span class="tech-card px-6 py-3 bg-gradient-to-r from-tech-purple/20 to-tech-pink/20 text-tech-purple dark:text-tech-pink font-semibold rounded-xl hover:scale-105 transition-all duration-300">
+                        Skyler Wang
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <a href="#overview" class="group relative px-10 py-5 bg-gradient-to-r from-tech-blue to-tech-purple text-white font-bold rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105 overflow-hidden">
+                    <span class="relative z-10">Explore Project</span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-tech-purple to-tech-blue opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute -inset-1 bg-gradient-to-r from-tech-blue to-tech-purple rounded-2xl blur-md opacity-0 group-hover:opacity-70 transition-opacity duration-500"></div>
+                    <i class="fas fa-arrow-down ml-3 relative z-10 animate-bounce"></i>
+                </a>
+            </div>
+            
+            <!-- Floating Tech Icons -->
+            <div class="mt-20 flex justify-center space-x-8">
+                <div class="floating animation-delay-0">
+                    <i class="fab fa-raspberry-pi text-4xl text-tech-red opacity-70"></i>
+                </div>
+                <div class="floating animation-delay-200">
+                    <i class="fab fa-python text-4xl text-tech-green opacity-70"></i>
+                </div>
+                <div class="floating animation-delay-400">
+                    <i class="fas fa-cube text-4xl text-tech-orange opacity-70"></i>
+                </div>
+                <div class="floating animation-delay-600">
+                    <i class="fas fa-gamepad text-4xl text-tech-purple opacity-70"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Overview -->
+    <section id="overview" class="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
+        <div class="absolute inset-0 bg-circuit-board opacity-5"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-7xl mx-auto">
+                <!-- Section Header with Animation -->
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-gray-800 dark:text-white inline-block">
+                        <span class="gradient-text">
+                            Project Overview
+                        </span>
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto font-light">
+                        Building a functional, interactive, and smart electronic device powered by Raspberry Pi Pico
+                    </p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-12 mb-16">
+                    <div class="tech-card p-8 rounded-3xl">
+                        <div class="flex items-start mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-tech-red to-tech-orange flex items-center justify-center mr-4 shadow-lg">
+                                <i class="fas fa-bullseye text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white">The Challenge</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed">
+                            This project began with a challenge from our professor: design and build a functional, interactive, portable, and smart electronic device powered by the Raspberry Pi Pico. The goal was to create a device that not only works reliably, but also demonstrates our understanding of Python programming, electronic components, AutoCAD design, and the full Engineering Design Process.
+                        </p>
+                        
+                        <div class="tech-card p-6 rounded-2xl bg-gradient-to-r from-tech-blue/10 via-tech-purple/10 to-tech-cyan/10">
+                            <h4 class="font-bold mb-4 text-gray-800 dark:text-white">Design Specifications</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-tech-green mt-1 mr-3"></i>
+                                    <span class="text-gray-600 dark:text-gray-300">Laser-cut enclosure designed in AutoCAD with proper openings and assembly</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-tech-green mt-1 mr-3"></i>
+                                    <span class="text-gray-600 dark:text-gray-300">Raspberry Pi Pico integration with minimum 4 electronic components</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-tech-green mt-1 mr-3"></i>
+                                    <span class="text-gray-600 dark:text-gray-300">User interface with input methods and feedback systems</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-tech-green mt-1 mr-3"></i>
+                                    <span class="text-gray-600 dark:text-gray-300">Complete digital design notebook documentation</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-card p-8 rounded-3xl">
+                        <div class="flex items-start mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-tech-purple to-tech-pink flex items-center justify-center mr-4 shadow-lg">
+                                <i class="fas fa-microchip text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white">Component Integration</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-8 text-lg leading-relaxed">
+                            Our interactive game system integrates multiple electronic components to create an engaging user experience:
+                        </p>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="tech-card p-4 rounded-xl text-center card-hover hover:scale-105 transition-all duration-300">
+                                <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-tech-blue to-tech-cyan flex items-center justify-center shadow-md">
+                                    <i class="fas fa-microchip text-white"></i>
+                                </div>
+                                <h5 class="font-semibold text-gray-800 dark:text-white">Raspberry Pi Pico</h5>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">Microcontroller</p>
+                            </div>
+                            <div class="tech-card p-4 rounded-xl text-center card-hover hover:scale-105 transition-all duration-300">
+                                <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-tech-purple to-tech-pink flex items-center justify-center shadow-md">
+                                    <i class="fas fa-tv text-white"></i>
+                                </div>
+                                <h5 class="font-semibold text-gray-800 dark:text-white">LCD Display</h5>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">Visual feedback</p>
+                            </div>
+                            <div class="tech-card p-4 rounded-xl text-center card-hover hover:scale-105 transition-all duration-300">
+                                <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-tech-orange to-tech-red flex items-center justify-center shadow-md">
+                                    <i class="fas fa-lightbulb text-white"></i>
+                                </div>
+                                <h5 class="font-semibold text-gray-800 dark:text-white">16 LEDs</h5>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">Status indication</p>
+                            </div>
+                            <div class="tech-card p-4 rounded-xl text-center card-hover hover:scale-105 transition-all duration-300">
+                                <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center shadow-md">
+                                    <i class="fas fa-gamepad text-white"></i>
+                                </div>
+                                <h5 class="font-semibold text-gray-800 dark:text-white">Arcade Buttons</h5>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">User input</p>
+                            </div>
+                            <div class="tech-card p-4 rounded-xl text-center card-hover hover:scale-105 transition-all duration-300">
+                                <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-tech-red to-tech-orange flex items-center justify-center shadow-md">
+                                    <i class="fas fa-cogs text-white"></i>
+                                </div>
+                                <h5 class="font-semibold text-gray-800 dark:text-white">Servo Motor</h5>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">Candy dispenser</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Problem Definition -->
+                <div class="tech-card p-8 rounded-3xl">
+                    <div class="flex items-center mb-8">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-tech-cyan to-tech-blue flex items-center justify-center mr-4 shadow-lg">
+                            <i class="fas fa-question-circle text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 dark:text-white">Defining the Problem</h3>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="tech-card p-6 rounded-2xl">
+                            <h4 class="font-bold mb-4 text-gray-800 dark:text-white">Design Questions</h4>
+                            <ul class="space-y-4">
+                                <li class="flex items-start">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-tech-blue/20 to-tech-cyan/20 flex items-center justify-center mr-3 mt-1">
+                                        <i class="fas fa-question text-tech-blue"></i>
+                                    </div>
+                                    <span class="text-gray-600 dark:text-gray-300">What problem or user need does our device address?</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-tech-blue/20 to-tech-cyan/20 flex items-center justify-center mr-3 mt-1">
+                                        <i class="fas fa-question text-tech-blue"></i>
+                                    </div>
+                                    <span class="text-gray-600 dark:text-gray-300">Who will interact with it, and in what context?</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-tech-blue/20 to-tech-cyan/20 flex items-center justify-center mr-3 mt-1">
+                                        <i class="fas fa-question text-tech-blue"></i>
+                                    </div>
+                                    <span class="text-gray-600 dark:text-gray-300">What features are necessary for effective performance?</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tech-card p-6 rounded-2xl">
+                            <h4 class="font-bold mb-4 text-gray-800 dark:text-white">Brainstorming Process</h4>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                During our brainstorming sessions, we explored several concepts, including interactive games, sensory devices, and other creative electronic systems. Each team member contributed sketches that showed possible layouts, component placement, and enclosure shapes.
+                            </p>
+                            <div class="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-tech-purple/10 to-tech-pink/10 w-fit">
+                                <i class="fas fa-users text-tech-purple mr-2"></i>
+                                <span class="text-gray-600 dark:text-gray-300">Team collaboration with integrated design ideas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Design Process -->
+    <section id="process" class="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 relative">
+        <div class="absolute inset-0 bg-grid-dots opacity-10"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-7xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-gray-800 dark:text-white">
+                        <span class="gradient-text">
+                            Design Process & Development
+                        </span>
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto font-light">
+                        Following the complete engineering design process from concept to prototype
+                    </p>
+                </div>
+                
+                <!-- Concept Development -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold mb-8 text-tech-blue dark:text-tech-blue">Concept Development</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="tech-card p-8 rounded-3xl">
+                            <div class="flex items-start mb-6">
+                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-tech-blue to-tech-cyan flex items-center justify-center mr-4 shadow-md">
+                                    <i class="fas fa-lightbulb text-white"></i>
+                                </div>
+                                <h4 class="text-xl font-bold text-gray-800 dark:text-white">Initial Game Concepts</h4>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                During early brainstorming sessions, our group discussed several potential interactive games:
+                            </p>
+                            <div class="flex flex-wrap gap-3">
+                                <span class="px-4 py-2 rounded-full bg-gradient-to-r from-tech-blue/20 to-tech-blue/10 text-tech-blue border border-tech-blue/20">Doodle Jump</span>
+                                <span class="px-4 py-2 rounded-full bg-gradient-to-r from-tech-purple/20 to-tech-purple/10 text-tech-purple border border-tech-purple/20">Piano Tiles</span>
+                                <span class="px-4 py-2 rounded-full bg-gradient-to-r from-tech-green/20 to-tech-green/10 text-tech-green border border-tech-green/20">Tempo Game</span>
+                                <span class="px-4 py-2 rounded-full bg-gradient-to-r from-tech-orange/20 to-tech-orange/10 text-tech-orange border border-tech-orange/20">Ball Drop</span>
+                                <span class="px-4 py-2 rounded-full bg-gradient-to-r from-tech-red/20 to-tech-red/10 text-tech-red border border-tech-red/20">Flappy Bird</span>
+                                <span class="px-4 py-2 rounded-full bg-gradient-to-r from-tech-pink/20 to-tech-pink/10 text-tech-pink border border-tech-pink/20">Light Reaction Game</span>
+                            </div>
+                        </div>
+                        
+                        <div class="tech-card p-8 rounded-3xl">
+                            <div class="flex items-start mb-6">
+                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-tech-orange to-tech-red flex items-center justify-center mr-4 shadow-md">
+                                    <i class="fas fa-cube text-white"></i>
+                                </div>
+                                <h4 class="text-xl font-bold text-gray-800 dark:text-white">Cardboard Prototyping</h4>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                Each team member created cardboard prototypes to showcase their design ideas. This allowed us to evaluate ergonomics, component placement, and user interaction.
+                            </p>
+                            <div class="space-y-4">
+                                <div class="flex items-center text-gray-600 dark:text-gray-300">
+                                    <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-3">
+                                        <i class="fas fa-check text-white text-xs"></i>
+                                    </div>
+                                    <span>Identified preferred design elements</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 dark:text-gray-300">
+                                    <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-3">
+                                        <i class="fas fa-check text-white text-xs"></i>
+                                    </div>
+                                    <span>Integrated best ideas into final design</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Digital Design Notebook -->
+                <div class="tech-card p-8 rounded-3xl mb-16">
+                    <div class="flex items-center mb-8">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-4 shadow-lg">
+                            <i class="fas fa-book text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 dark:text-white">Digital Design Notebook</h3>
+                    </div>
+                    
+                    <p class="text-gray-600 dark:text-gray-300 mb-8 text-lg leading-relaxed">
+                        Our digital design notebook includes the full progression of the project, documenting every step of the engineering design process.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                        <div class="border-l-4 border-tech-blue dark:border-tech-blue pl-4 py-2">
+                            <h5 class="font-bold mb-2 text-gray-800 dark:text-white">Brainstorming & Selection</h5>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Shared game ideas and evaluated feasibility</p>
+                        </div>
+                        <div class="border-l-4 border-tech-purple dark:border-tech-purple pl-4 py-2">
+                            <h5 class="font-bold mb-2 text-gray-800 dark:text-white">Initial Sketches</h5>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">LCD placement, button positions, wiring layout</p>
+                        </div>
+                        <div class="border-l-4 border-tech-green dark:border-tech-green pl-4 py-2">
+                            <h5 class="font-bold mb-2 text-gray-800 dark:text-white">Flowcharts</h5>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Start screen, LED logic, win/lose screens, restart loop</p>
+                        </div>
+                        <div class="border-l-4 border-tech-orange dark:border-tech-orange pl-4 py-2">
+                            <h5 class="font-bold mb-2 text-gray-800 dark:text-white">Pseudocode</h5>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Guided the first version of the program</p>
+                        </div>
+                        <div class="border-l-4 border-tech-red dark:border-tech-red pl-4 py-2">
+                            <h5 class="font-bold mb-2 text-gray-800 dark:text-white">Prototype Photos</h5>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Early enclosure and spacing documentation</p>
+                        </div>
+                        <div class="border-l-4 border-tech-pink dark:border-tech-pink pl-4 py-2">
+                            <h5 class="font-bold mb-2 text-gray-800 dark:text-white">Wiring Diagrams</h5>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Created on Wokwi and hand sketches</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Notebook Image Gallery -->
+                    <div class="tech-card p-8 rounded-2xl border border-gray-200/50 dark:border-gray-700/50">
+                        <h4 class="font-bold mb-6 text-gray-800 dark:text-white text-center">Design Notebook Visuals</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="text-center">
+                                <div class="w-full h-64 bg-gray-100 dark:bg-gray-700 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                                    <img 
+                                        src="https://i.ibb.co/h1Bn12dV/Untitled.png"
+                                        alt="Untitled"
+                                        class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-500"
+                                        onclick="openModal(this)"
+                                    >
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">CAD Design</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-full h-64 bg-gray-100 dark:bg-gray-700 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                                    <img 
+                                        src="https://i.ibb.co/prsFmwH1/IMG-2408.jpg"
+                                        alt="IMG 2408"
+                                        class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-500"
+                                        onclick="openModal(this)"
+                                    >
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">Early Wiring</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Iterations -->
+    <section id="iterations" class="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
+        <div class="absolute inset-0 bg-circuit-board opacity-5"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-gray-800 dark:text-white">
+                        <span class="gradient-text">
+                            Design Iterations
+                        </span>
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto font-light">
+                        Six major iterations that transformed our concept into a functional prototype
+                    </p>
+                </div>
+                
+                <!-- Iteration Timeline -->
+                <div class="space-y-8">
+                    <!-- Iteration 1 -->
+                    <div class="tech-card p-8 rounded-3xl">
+                        <div class="flex items-start mb-6">
+                            <div class="px-5 py-2 rounded-xl bg-gradient-to-r from-tech-blue to-tech-purple text-white font-bold mr-4">
+                                <span>Iteration 1</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white">Initial Breadboard Assembly</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Circuit assembly using a full-size breadboard</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            This iteration focused on assembling and testing the circuit components directly on a full-size breadboard to verify basic functionality.
+                        </p>
+                    </div>
+                    
+                    <!-- Iteration 2 -->
+                    <div class="tech-card p-8 rounded-3xl">
+                        <div class="flex items-start mb-6">
+                            <div class="px-5 py-2 rounded-xl bg-gradient-to-r from-tech-purple to-tech-pink text-white font-bold mr-4">
+                                <span>Iteration 2</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white">Early Cardboard Enclosure</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Rough enclosure prototype using preliminary measurements</p>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="font-bold mb-3 text-gray-800 dark:text-white">Key Findings</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-orange to-tech-red flex items-center justify-center mr-3 mt-1">
+                                            <i class="fas fa-exclamation text-white text-xs"></i>
+                                        </div>
+                                        <span class="text-gray-600 dark:text-gray-300">Full-size breadboard was too bulky</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-orange to-tech-red flex items-center justify-center mr-3 mt-1">
+                                            <i class="fas fa-exclamation text-white text-xs"></i>
+                                        </div>
+                                        <span class="text-gray-600 dark:text-gray-300">Enclosure size would need to increase or be redesigned</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-3 text-gray-800 dark:text-white">Conclusion</h4>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    This iteration showed that a different internal approach was required to maintain portability.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Iteration 3 -->
+                    <div class="tech-card p-8 rounded-3xl">
+                        <div class="flex items-start mb-6">
+                            <div class="px-5 py-2 rounded-xl bg-gradient-to-r from-tech-green to-tech-cyan text-white font-bold mr-4">
+                                <span>Iteration 3</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white">Mini Breadboard Conversion</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Reduced footprint and improved enclosure feasibility</p>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="font-bold mb-3 text-gray-800 dark:text-white">Improvements</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-3 mt-1">
+                                            <i class="fas fa-check text-white text-xs"></i>
+                                        </div>
+                                        <span class="text-gray-600 dark:text-gray-300">Significantly reduced internal spacing issues</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-3 mt-1">
+                                            <i class="fas fa-check text-white text-xs"></i>
+                                        </div>
+                                        <span class="text-gray-600 dark:text-gray-300">Allowed for a smaller enclosure design</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-3 text-gray-800 dark:text-white">New Challenge</h4>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Inconsistent wire lengths caused clutter and made internal organization difficult.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Iteration 4 -->
+                    <div class="tech-card p-8 rounded-3xl">
+                        <div class="flex items-start mb-6">
+                            <div class="px-5 py-2 rounded-xl bg-gradient-to-r from-tech-orange to-tech-red text-white font-bold mr-4">
+                                <span>Iteration 4</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white">Revised Enclosure Height</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Improved clearance and wiring management</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            The enclosure was made slightly taller to improve internal clearance, making wiring cleaner and reducing interference between components.
+                        </p>
+                    </div>
+                    
+                    <!-- Iteration 5 -->
+                    <div class="tech-card p-8 rounded-3xl">
+                        <div class="flex items-start mb-6">
+                            <div class="px-5 py-2 rounded-xl bg-gradient-to-r from-tech-cyan to-tech-blue text-white font-bold mr-4">
+                                <span>Iteration 5</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white">Sliding Internal Frame</h3>
+                                <p class="text-gray-600 dark:text-gray-300">First wooden prototype with modular internal structure</p>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="font-bold mb-3 text-gray-800 dark:text-white">Design Advancements</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-3 mt-1">
+                                            <i class="fas fa-check text-white text-xs"></i>
+                                        </div>
+                                        <span class="text-gray-600 dark:text-gray-300">Hidden wiring for a cleaner appearance</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-3 mt-1">
+                                            <i class="fas fa-check text-white text-xs"></i>
+                                        </div>
+                                        <span class="text-gray-600 dark:text-gray-300">Space added for LCD screen and candy dispenser</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-3 text-gray-800 dark:text-white">Challenges</h4>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Layered structure complicated wire routing and caused components to disconnect, requiring soldered connections and a redesigned candy dispenser mechanism.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Iteration 6 -->
+                    <div class="tech-card p-8 rounded-3xl">
+                        <div class="flex items-start mb-6">
+                            <div class="px-5 py-2 rounded-xl bg-gradient-to-r from-tech-blue via-tech-purple to-tech-pink text-white font-bold mr-4">
+                                <span>Iteration 6</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white">Final Integrated Design</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Stable, functional, and demonstration-ready system</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            All solutions were combined into the final design, resulting in a reliable device with secure wiring, clean internal organization, and fully functional gameplay.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Lessons Learned -->
+                <div class="mt-16 grid md:grid-cols-2 gap-8">
+                    <div class="tech-card p-8 rounded-3xl bg-gradient-to-r from-tech-green/10 to-tech-cyan/10 border border-tech-green/20">
+                        <h4 class="font-bold mb-6 text-tech-green dark:text-tech-green flex items-center">
+                            <i class="fas fa-check-circle mr-3"></i>
+                            What Worked Well
+                        </h4>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-tech-green/20 to-tech-cyan/20 flex items-center justify-center mr-3 mt-1">
+                                    <i class="fas fa-check text-tech-green"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300">Measuring before cutting</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-tech-green/20 to-tech-cyan/20 flex items-center justify-center mr-3 mt-1">
+                                    <i class="fas fa-check text-tech-green"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300">Flat ribbon cables for neater organization</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-tech-green/20 to-tech-cyan/20 flex items-center justify-center mr-3 mt-1">
+                                    <i class="fas fa-check text-tech-green"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300">Flowcharting before coding</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-card p-8 rounded-3xl bg-gradient-to-r from-tech-red/10 to-tech-orange/10 border border-tech-red/20">
+                        <h4 class="font-bold mb-6 text-tech-red dark:text-tech-red flex items-center">
+                            <i class="fas fa-exclamation-triangle mr-3"></i>
+                            What Didn't Work
+                        </h4>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-tech-red/20 to-tech-orange/20 flex items-center justify-center mr-3 mt-1">
+                                    <i class="fas fa-times text-tech-red"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300">Ignoring debouncing early on</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-tech-red/20 to-tech-orange/20 flex items-center justify-center mr-3 mt-1">
+                                    <i class="fas fa-times text-tech-red"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300">Attempting to fit everything on one plane</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-tech-red/20 to-tech-orange/20 flex items-center justify-center mr-3 mt-1">
+                                    <i class="fas fa-times text-tech-red"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300">Jumping into wiring before planning internal layout</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Image Gallery -->
+                <div class="mt-16 tech-card p-8 rounded-3xl">
+                    <h4 class="font-bold mb-8 text-gray-800 dark:text-white text-center text-2xl">Iteration Visual Documentation</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="w-full h-48 bg-gray-100 dark:bg-gray-700 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                                <img 
+                                    src="https://i.ibb.co/SXnw0gG1/IMG-2983.jpg"
+                                    alt="IMG 2983"
+                                    class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-500"
+                                    onclick="openModal(this)"
+                                >
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Laser Cutting Process</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-48 bg-gray-100 dark:bg-gray-700 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                                <img 
+                                    src="https://i.ibb.co/j9DZSJBk/IMG-2742.jpg"
+                                    alt="IMG 2742"
+                                    class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-500"
+                                    onclick="openModal(this)"
+                                >
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Early prototype</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-48 bg-gray-100 dark:bg-gray-700 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                                <img 
+                                    src="https://i.ibb.co/sppgFvkk/IMG-2942.jpg"
+                                    alt="IMG 2942"
+                                    class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-500"
+                                    onclick="openModal(this)"
+                                >
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Finishing touches</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Design -->
+    <section id="final" class="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
+        <div class="absolute inset-0 bg-grid-dots opacity-10"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-gray-800 dark:text-white">
+                        <span class="gradient-text">
+                            Final Design Showcase
+                        </span>
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto font-light">
+                        The culmination of our engineering design journey - a fully functional interactive game system
+                    </p>
+                </div>
+                
+                <div class="tech-card p-8 rounded-3xl shadow-2xl mb-12">
+                    <!-- Overview -->
+                    <div class="mb-10">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-tech-blue to-tech-purple flex items-center justify-center mr-4 shadow-lg">
+                                <i class="fas fa-cogs text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white">Final System Overview</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
+                            The final design features a Raspberry Pi Pico microcontroller, sixteen LEDs (twelve active), an LCD display with a front viewing window, two arcade buttons, and a servo-controlled candy dispenser, all housed within a custom laser-cut wooden enclosure. The internal structure is carefully organized to support each component securely, and the device runs a fully functional reaction-based game. The final product is portable, durable, and ready for live demonstration.
+                        </p>
+                    </div>
+                    
+                    <!-- Components -->
+                    <div class="grid md:grid-cols-2 gap-8 mb-10">
+                        <!-- Hardware -->
+                        <div>
+                            <h4 class="font-bold mb-6 text-gray-800 dark:text-white text-xl">Hardware Components</h4>
+                            <div class="space-y-4">
+                                <div class="tech-card p-5 rounded-2xl flex items-center hover:scale-105 transition-all duration-300">
+                                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-tech-blue to-tech-cyan flex items-center justify-center mr-4 shadow-md">
+                                        <i class="fas fa-microchip text-white text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800 dark:text-white">Raspberry Pi Pico</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Primary microcontroller and game logic processor</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="tech-card p-5 rounded-2xl flex items-center hover:scale-105 transition-all duration-300">
+                                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-tech-purple to-tech-pink flex items-center justify-center mr-4 shadow-md">
+                                        <i class="fas fa-tv text-white text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800 dark:text-white">LCD Display</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Front-facing visual output for game states and scores</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="tech-card p-5 rounded-2xl flex items-center hover:scale-105 transition-all duration-300">
+                                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-tech-orange to-tech-red flex items-center justify-center mr-4 shadow-md">
+                                        <i class="fas fa-lightbulb text-white text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800 dark:text-white">16 LEDs (12 Active)</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Reaction indicators and visual feedback for gameplay</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Structure -->
+                        <div>
+                            <h4 class="font-bold mb-6 text-gray-800 dark:text-white text-xl">Enclosure & Structure</h4>
+                            <div class="space-y-4">
+                                <div class="tech-card p-5 rounded-2xl flex items-center hover:scale-105 transition-all duration-300">
+                                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-4 shadow-md">
+                                        <i class="fas fa-cut text-white text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800 dark:text-white">Laser-Cut Wooden Enclosure</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Custom-designed with precise cutouts and curvature</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="tech-card p-5 rounded-2xl flex items-center hover:scale-105 transition-all duration-300">
+                                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-tech-cyan to-tech-blue flex items-center justify-center mr-4 shadow-md">
+                                        <i class="fas fa-layer-group text-white text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800 dark:text-white">Multi-Layer Internal Frame</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Organized layout separating logic, wiring, and mechanics</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="tech-card p-5 rounded-2xl flex items-center hover:scale-105 transition-all duration-300">
+                                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-tech-red to-tech-orange flex items-center justify-center mr-4 shadow-md">
+                                        <i class="fas fa-code text-white text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800 dark:text-white">Custom Game Software</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Python-based reaction game with win logic and resets</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Peer Feedback -->
+                    <div class="tech-card p-8 rounded-2xl bg-gradient-to-r from-tech-blue/10 via-tech-purple/10 to-tech-cyan/10 border border-tech-blue/20">
+                        <div class="flex items-center mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-tech-blue to-tech-cyan flex items-center justify-center mr-4 shadow-md">
+                                <i class="fas fa-comments text-white"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-800 dark:text-white text-xl">Peer Feedback & Evaluation</h4>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex items-start mb-4">
+                                <i class="fas fa-quote-left text-tech-blue dark:text-tech-blue text-2xl mr-4 mt-1"></i>
+                                <p class="text-gray-600 dark:text-gray-300 italic text-lg">
+                                    "Very good display & impressive assembly, fun game that catched the users eyes."
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid sm:grid-cols-2 gap-4 text-gray-600 dark:text-gray-300">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-3">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <span>Highly intuitive user interaction</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-3">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <span>Clean wiring and internal organization</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-green to-tech-cyan flex items-center justify-center mr-3">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <span>Professional-quality enclosure design</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-gradient-to-br from-tech-red to-tech-orange flex items-center justify-center mr-3">
+                                    <i class="fas fa-times text-white text-xs"></i>
+                                </div>
+                                <span>Unresponsive buttons</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Final Prototype Gallery -->
+                <div class="tech-card p-8 rounded-3xl">
+                    <h4 class="font-bold mb-8 text-gray-800 dark:text-white text-center text-2xl">Final Prototype</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="w-full h-64 bg-gray-100 dark:bg-gray-700 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                                <img 
+                                    src="https://i.ibb.co/4ZHCwQLr/71-B19-D39-437-B-4665-A71-F-553-D69-D8727-CIMG-3921.avif"
+                                    alt="IMG 3921"
+                                    class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-500"
+                                    onclick="openModal(this)"
+                                >
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-64 bg-gray-100 dark:bg-gray-700 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                                <img 
+                                    src="https://i.ibb.co/cp8FC6Y/F763-B138-1763-401_E-8871-1125-EE1137-C1-IMG-3926.avif"
+                                    alt="IMG 3926"
+                                    class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-500"
+                                    onclick="openModal(this)"
+                                >
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-64 bg-gray-100 dark:bg-gray-700 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                                <img 
+                                    src="https://i.ibb.co/6cxvjSRy/2-A4-BBF1-D-63-C8-4639-91-C2-B13-DFFAD3278.avif"
+                                    alt="IMG 3928"
+                                    class="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-500"
+                                    onclick="openModal(this)"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4">
+        <span class="absolute top-4 right-8 text-white text-4xl cursor-pointer hover:text-tech-blue transition-colors" onclick="closeModal()">&times;</span>
+        <img id="modalImage" src="" class="max-h-full max-w-full rounded-2xl shadow-2xl">
+    </div>
+
+    <!-- Enhanced Footer -->
+    <footer class="bg-gradient-to-b from-gray-900 to-gray-950 text-white pt-16 pb-8">
+        <div class="container mx-auto px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid lg:grid-cols-3 gap-12 mb-12">
+                    <!-- Brand Section -->
+                    <div>
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-br from-tech-blue to-tech-purple rounded-xl flex items-center justify-center shadow-lg">
+                                <i class="fas fa-microchip text-white"></i>
+                            </div>
+                            <div>
+                                <a href="http://127.0.0.1:3000/TEST?serverWindowId=bb846d9a-46f8-4bc8-9b8f-6756fd095239" 
+                                class="text-2xl font-black text-gray-200 hover:text-white transition-colors">
+                                    Engineering
+                                </a>
+                                <a href="http://127.0.0.1:3000/TEST?serverWindowId=bb846d9a-46f8-4bc8-9b8f-6756fd095239" 
+                                class="text-2xl font-black gradient-text">
+                                    Portfolio
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mt-4">
+                            Last updated: <span id="lastEdited" class="font-bold text-gray-300"></span>
+                        </p>
+                    </div>
+                    
+                    <!-- Project Sections -->
+                    <div>
+                        <h4 class="text-lg font-bold mb-6 text-gray-200">Project Sections</h4>
+                        <ul class="space-y-3">
+                            <li>
+                                <a href="#home" class="text-gray-400 hover:text-tech-blue transition-colors duration-300 flex items-center group">
+                                    <i class="fas fa-chevron-right text-xs mr-3 group-hover:translate-x-2 transition-transform duration-300"></i>
+                                    Home
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#overview" class="text-gray-400 hover:text-tech-blue transition-colors duration-300 flex items-center group">
+                                    <i class="fas fa-chevron-right text-xs mr-3 group-hover:translate-x-2 transition-transform duration-300"></i>
+                                    Overview
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#process" class="text-gray-400 hover:text-tech-blue transition-colors duration-300 flex items-center group">
+                                    <i class="fas fa-chevron-right text-xs mr-3 group-hover:translate-x-2 transition-transform duration-300"></i>
+                                    Design Process
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#iterations" class="text-gray-400 hover:text-tech-blue transition-colors duration-300 flex items-center group">
+                                    <i class="fas fa-chevron-right text-xs mr-3 group-hover:translate-x-2 transition-transform duration-300"></i>
+                                    Iterations
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#final" class="text-gray-400 hover:text-tech-blue transition-colors duration-300 flex items-center group">
+                                    <i class="fas fa-chevron-right text-xs mr-3 group-hover:translate-x-2 transition-transform duration-300"></i>
+                                    Final Design
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Technologies -->
+                    <div>
+                        <h4 class="text-lg font-bold mb-6 text-gray-200">Technologies Used</h4>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2 rounded-full bg-gradient-to-r from-gray-800 to-gray-900 border border-tech-blue/30 text-tech-blue text-sm font-semibold">
+                                Raspberry Pi Pico
+                            </span>
+                            <span class="px-4 py-2 rounded-full bg-gradient-to-r from-gray-800 to-gray-900 border border-tech-green/30 text-tech-green text-sm font-semibold">
+                                Python
+                            </span>
+                            <span class="px-4 py-2 rounded-full bg-gradient-to-r from-gray-800 to-gray-900 border border-tech-purple/30 text-tech-purple text-sm font-semibold">
+                                AutoCAD
+                            </span>
+                            <span class="px-4 py-2 rounded-full bg-gradient-to-r from-gray-800 to-gray-900 border border-tech-orange/30 text-tech-orange text-sm font-semibold">
+                                Laser Cutting
+                            </span>
+                            <span class="px-4 py-2 rounded-full bg-gradient-to-r from-gray-800 to-gray-900 border border-tech-red/30 text-tech-red text-sm font-semibold">
+                                Electronics
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Copyright -->
+                <div class="border-t border-gray-800 pt-8 text-center">
+                    <p class="text-gray-400">
+                        © 2025 Dabian Taborda Restrepo - Engineering Portfolio. This portfolio documents academic and personal engineering projects.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Advanced JavaScript -->
+    <script>
+        // Initialize Particles.js
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 80, density: { enable: true, value_area: 800 } },
+                        color: { value: "#3b82f6" },
+                        shape: { type: "circle" },
+                        opacity: { value: 0.5, random: true },
+                        size: { value: 3, random: true },
+                        line_linked: {
+                            enable: true,
+                            distance: 150,
+                            color: "#3b82f6",
+                            opacity: 0.2,
+                            width: 1
+                        },
+                        move: {
+                            enable: true,
+                            speed: 2,
+                            direction: "none",
+                            random: true,
+                            straight: false,
+                            out_mode: "out",
+                            bounce: false
+                        }
+                    },
+                    interactivity: {
+                        detect_on: "canvas",
+                        events: {
+                            onhover: { enable: true, mode: "repulse" },
+                            onclick: { enable: true, mode: "push" }
+                        }
+                    },
+                    retina_detect: true
+                });
+            }
+
+            // Create Binary Code Animation
+            function createBinaryAnimation() {
+                const container = document.getElementById('binaryContainer');
+                if (!container) return;
+                
+                const binaryChars = ['0', '1'];
+                const digitCount = 50;
+                
+                for (let i = 0; i < digitCount; i++) {
+                    const digit = document.createElement('div');
+                    digit.className = 'binary-digit';
+                    digit.textContent = binaryChars[Math.floor(Math.random() * binaryChars.length)];
+                    digit.style.left = `${Math.random() * 100}%`;
+                    digit.style.top = `${Math.random() * -100}px`;
+                    digit.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                    digit.style.animationDelay = `${Math.random() * 5}s`;
+                    container.appendChild(digit);
+                }
+            }
+            
+            createBinaryAnimation();
+
+            // Theme Toggle Functionality
+            const themeToggle = document.getElementById('themeToggle');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+                document.documentElement.classList.add('dark');
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+            
+            // Mobile menu toggle
+            function toggleMobileMenu() {
+                const mobileMenu = document.getElementById('mobileMenu');
+                mobileMenu.classList.toggle('hidden');
+            }
+            
+            // Expose function to global scope for onclick
+            window.toggleMobileMenu = toggleMobileMenu;
+
+            // Active navigation highlighting
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            
+            function updateActiveNav() {
+                let current = '';
+                const scrollPos = window.scrollY + 100;
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                if (scrollPos < 100) {
+                    current = 'home';
+                }
+                
+                // Update desktop nav links
+                navLinks.forEach(link => {
+                    link.classList.remove('text-tech-blue', 'dark:text-tech-blue', 'active');
+                    link.classList.add('text-gray-600', 'dark:text-gray-300');
+                    
+                    if (link.getAttribute('data-target') === current) {
+                        link.classList.remove('text-gray-600', 'dark:text-gray-300');
+                        link.classList.add('text-tech-blue', 'dark:text-tech-blue', 'active');
+                    }
+                });
+                
+                // Update mobile nav links
+                mobileNavLinks.forEach(link => {
+                    link.classList.remove('text-tech-blue', 'dark:text-tech-blue');
+                    link.classList.add('text-gray-600', 'dark:text-gray-300');
+                    
+                    if (link.getAttribute('data-target') === current) {
+                        link.classList.remove('text-gray-600', 'dark:text-gray-300');
+                        link.classList.add('text-tech-blue', 'dark:text-tech-blue');
+                    }
+                });
+            }
+            
+            // Initial call
+            updateActiveNav();
+            
+            // Listen for scroll events
+            window.addEventListener('scroll', updateActiveNav);
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    
+                    // Don't prevent default for external links
+                    if (href.includes('http://') || href.includes('https://')) {
+                        return;
+                    }
+                    
+                    e.preventDefault();
+                    
+                    if (href === '#' || href === '#home') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        const targetElement = document.querySelector(href);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Last updated date
+            document.getElementById("lastEdited").textContent =
+                new Date(document.lastModified).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                });
+
+            // Add hover effects to all cards
+            document.querySelectorAll('.tech-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-15px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Parallax effect for hero section
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const hero = document.querySelector('#home');
+                if (hero) {
+                    hero.style.transform = `translateY(${scrolled * 0.1}px)`;
+                }
+            });
+        });
+
+        // Image modal functions
+        function openModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modalImg.src = img.src;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        // Expose functions to global scope
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+    </script>
+</body>
+</html>
